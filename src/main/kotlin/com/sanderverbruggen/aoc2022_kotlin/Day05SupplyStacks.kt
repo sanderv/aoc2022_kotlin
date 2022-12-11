@@ -65,7 +65,7 @@ class SupplyStacks {
             val crane = stacks[instruction.from].takeLast(instruction.count)
             stacks[instruction.from] =
                 stacks[instruction.from].dropLast(instruction.count).toMutableList()
-            stacks[instruction.to].addAll(crane.reversed())
+            stacks[instruction.to].addAll(crane)
         }
     }
 }
