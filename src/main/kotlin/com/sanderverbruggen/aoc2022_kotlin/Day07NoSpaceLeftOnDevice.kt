@@ -41,10 +41,6 @@ class Day07NoSpaceLeftOnDevice {
             .sorted()
             .first()
     }
-
-    private fun readFileLines(currentDir: Directory) {
-        TODO("Not yet implemented")
-    }
 }
 
 class Directory(val name: String, val parent: Directory? = null) {
