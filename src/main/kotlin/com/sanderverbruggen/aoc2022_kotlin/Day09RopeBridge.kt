@@ -5,18 +5,17 @@ import kotlin.math.sign
 
 class RopeBridge {
     private val visited = mutableSetOf<Position>()
-    private var headPosition = Position(0, 0)
-    private var tailPosition = Position(0, 0)
+    private val knots = MutableList<Position>(10) { _ -> Position(0, 0) }
     fun solvePart1(lines: List<String>): Int {
         lines.forEach { line ->
             val command = line.split(" ")
             val direction = command[0]
             val steps = command[1].toInt()
-            visited.add(tailPosition)
+            visited.add(Position(knots.last().x, knots.last().y))
             repeat(steps) {
                 moveHead(direction)
                 catchUpTail()
-                visited.add(tailPosition)
+                visited.add(Position(knots.last().x, knots.last().y))
             }
 
         }
@@ -24,22 +23,32 @@ class RopeBridge {
     }
 
     private fun moveHead(direction: String) {
-        var x = headPosition.x
-        var y = headPosition.y
+        var x = knots.first().x
+        var y = knots.first().y
         when (direction) {
             "R" -> x++
             "L" -> x--
             "U" -> y--
             "D" -> y++
         }
-        headPosition = Position(x, y)
+        knots[0] = Position(x, y)
     }
 
     private fun catchUpTail() {
-        val dx = headPosition.x - tailPosition.x
-        val dy = headPosition.y - tailPosition.y
-        if (abs(dx) > 1 || abs(dy) > 1) {
-            tailPosition = Position(tailPosition.x + dx.sign, tailPosition.y + dy.sign)
+        knots.forEachIndexed { i, _ ->
+            catchUp(i)
+        }
+    }
+
+    private fun catchUp(pos: Int) {
+        if (pos < knots.size - 1) {
+            val thisKnot = knots[pos]
+            val nextKnot = knots[pos + 1]
+            val dx = thisKnot.x - nextKnot.x
+            val dy = thisKnot.y - nextKnot.y
+            if (abs(dx) > 1 || abs(dy) > 1) {
+                knots[pos + 1] = Position(knots[pos + 1].x + dx.sign, knots[pos + 1].y + dy.sign)
+            }
         }
     }
 }
@@ -71,6 +80,7 @@ class Position(val x: Int, val y: Int) {
 
 fun main() {
 //    val lines = readFile("day9_example.txt").lines()
+//    val lines = readFile("day9_example2.txt").lines()
     val lines = readFile("day9_puzzle.txt").lines()
 
     println(RopeBridge().solvePart1(lines))
