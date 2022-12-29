@@ -1,6 +1,7 @@
 package com.sanderverbruggen.aoc2022_kotlin
 
 import kotlin.math.abs
+import kotlin.math.sign
 
 class RopeBridge {
     private val visited = mutableSetOf<Position>()
@@ -14,7 +15,7 @@ class RopeBridge {
             visited.add(tailPosition)
             repeat(steps) {
                 moveHead(direction)
-                catchUpTail(direction)
+                catchUpTail()
                 visited.add(tailPosition)
             }
 
@@ -34,17 +35,11 @@ class RopeBridge {
         headPosition = Position(x, y)
     }
 
-    private fun catchUpTail(direction: String) {
-        val dx = abs(headPosition.x - tailPosition.x)
-        val dy = abs(headPosition.y - tailPosition.y)
-        if (dx > 1 || dy > 1) {
-            tailPosition = when (direction) {
-                "R" -> Position(headPosition.x - 1, headPosition.y)
-                "L" -> Position(headPosition.x + 1, headPosition.y)
-                "U" -> Position(headPosition.x, headPosition.y + 1)
-                "D" -> Position(headPosition.x, headPosition.y - 1)
-                else -> Position(headPosition.x, headPosition.y)
-            }
+    private fun catchUpTail() {
+        val dx = headPosition.x - tailPosition.x
+        val dy = headPosition.y - tailPosition.y
+        if (abs(dx) > 1 || abs(dy) > 1) {
+            tailPosition = Position(tailPosition.x + dx.sign, tailPosition.y + dy.sign)
         }
     }
 }
